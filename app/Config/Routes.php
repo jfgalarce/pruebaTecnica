@@ -6,6 +6,8 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
+$routes->get('/', 'TaskController::view');
+
 $routes->group('tasks', function ($routes) {
     $routes->get('/', 'TaskController::index');
     $routes->get('(:num)', 'TaskController::show/$1');

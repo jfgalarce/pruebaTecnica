@@ -76,13 +76,18 @@ class TaskController extends ResourceController
     $task = $this->model->find($id);
 
     if (!$task) {
-        return $this->failNotFound("Task with ID $id not found");
+      return $this->failNotFound("Task with ID $id not found");
     }
 
     $this->model->delete($id);
-    
+
     return $this->respondDeleted([
-        'message' => "Task with ID $id deleted successfully"
+      'message' => "Task with ID $id deleted successfully"
     ]);
+  }
+
+  public function view()
+  {
+    return view('tasks');
   }
 }
