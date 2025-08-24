@@ -164,16 +164,16 @@ class Database extends Config
      */
     public array $tests = [
         'DSN'         => '',
-        'hostname'    => '127.0.0.1',
-        'username'    => '',
-        'password'    => '',
-        'database'    => ':memory:',
-        'DBDriver'    => 'SQLite3',
+         'hostname'     => 'db',
+        'username'     => 'ci_user',
+        'password'     => 'cipass',
+        'database'     => 'ci_app',
+        'DBDriver'     => 'MySQLi',
         'DBPrefix'    => 'db_',  // Needed to ensure we're working correctly with prefixes live. DO NOT REMOVE FOR CI DEVS
         'pConnect'    => false,
         'DBDebug'     => true,
-        'charset'     => 'utf8',
-        'DBCollat'    => '',
+        'charset'      => 'utf8mb4',
+        'DBCollat'     => 'utf8mb4_general_ci',
         'swapPre'     => '',
         'encrypt'     => false,
         'compress'    => false,
