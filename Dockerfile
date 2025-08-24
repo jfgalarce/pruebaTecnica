@@ -24,5 +24,4 @@ WORKDIR /var/www/html
 # Script de inicio: crear proyecto si no existe y luego levantar Apache
 COPY ./docker/start.sh /start.sh
 RUN chmod +x /start.sh
-
 CMD ["/start.sh"]
