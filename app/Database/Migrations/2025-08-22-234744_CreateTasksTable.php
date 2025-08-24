@@ -31,11 +31,11 @@ class CreateTasksTable extends Migration
             ],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->createTable('tasks');
+        $this->forge->createTable('tasks', false);
     }
 
     public function down()
     {
-        $this->forge->dropTable('tasks');
+        $this->forge->dropTable('tasks',false);
     }
 }
