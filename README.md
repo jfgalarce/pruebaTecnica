@@ -22,16 +22,25 @@
 
 ## Ejecutar pruebas unitarias
 
-1. Ingresa al contenedor correspondiente (por ejemplo, `frontend` o `backend`):
+1. Ingresa al contenedor correspondiente "codeigniter_app" :
   ```bash
-  docker compose exec <nombre_del_contenedor> bash
+  docker compose exec codeigniter_app bash
   ```
 
-2. Ejecuta las pruebas unitarias:
+2. Ejecutar todas las pruebas del proyecto:
   ```bash
-  # Para frontend (ejemplo con npm)     
-  npm test
+	docker compose exec codeigniter_app vendor/bin/phpunit tests/unit/TaskModelTest.php
+  ```
 
-  # Para backend (ejemplo con pytest)
-  pytest
+3. Ejecutar una prueba específica dentro de un archivo 
+  ```bash
+  docker compose exec codeigniter_app vendor/bin/phpunit --filter test_insert_task tests/unit/TaskModelTest.php
+  ```
+
+ ```bash
+  docker compose exec codeigniter_app vendor/bin/phpunit --filter test_find_task tests/unit/TaskModelTest.php
+  ```
+
+ ```bash
+  docker compose exec codeigniter_app vendor/bin/phpunit --filter test_update_task tests/unit/TaskModelTest.php
   ```
