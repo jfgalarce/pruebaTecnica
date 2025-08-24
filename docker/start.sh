@@ -18,6 +18,6 @@ if [ -f "spark" ]; then
     php spark migrate --all
 fi
 
-# Levantar Apache en primer plano
-exec apache2-foreground primer plano
-apache2-foreground
+# Levantar Apache correctamente en primer plano
+exec apache2-foreground
+
