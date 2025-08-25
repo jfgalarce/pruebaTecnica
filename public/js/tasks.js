@@ -5,7 +5,7 @@ function fetchTasks() {
   xhr.open('GET', '/tasks', true);
   xhr.onload = function () {
     if (xhr.status === 200) {
-      const tasks = JSON.parse(xhr.responseText);
+      const tasks = JSON.parse(xhr.responseText).data;
       const taskList = document.getElementById('taskList');
       taskList.innerHTML = '';
       tasks.forEach(task => {
@@ -13,7 +13,7 @@ function fetchTasks() {
         div.innerHTML = `
           <div class="task">
             <div class="task-title">
-              <textarea class="task-input">${task.title}</textarea>
+              <textarea class="task-input" maxlength="255">${task.title}</textarea>
             </div>
             <div class="task-actions">
               <button type="button" class="delete-button" onclick="deleteTask(${task.id}, this)">Eliminar</button>
@@ -23,12 +23,13 @@ function fetchTasks() {
         `;
         taskList.appendChild(div);
       });
+    }else{
+      alert('Error al cargar las tareas')
     }
   };
   xhr.send();
 }
 
-// Crear tarea
 function createTask() {
   let title = document.getElementById('newTask').value;
   if (!title) return;
@@ -40,6 +41,8 @@ function createTask() {
     if (xhr.status === 201) {
       fetchTasks();
       document.getElementById('newTask').value = '';
+    }else {
+      alert("Errores de validación")
     }
   };
   xhr.send(JSON.stringify({ title }));
@@ -52,8 +55,10 @@ function deleteTask(id, button) {
   const xhr = new XMLHttpRequest();
   xhr.open('DELETE', `/tasks/${id}`, true);
   xhr.onload = function () {
-    if (xhr.status === 200) {
+    if (xhr.status === 204) {
       fetchTasks();
+    }else{
+      alert("Error al eliminar la tarea");
     }
   };
   xhr.send();
@@ -71,6 +76,10 @@ function updateTask(id, button) {
   xhr.onload = function () {
     if (xhr.status === 200) {
       fetchTasks();
+    }else if(xhr.status === 404){
+      alert("Recurso no existe");
+    }else if (xhr.status === 422){
+      alert("Validación fallida");
     }
   };
   xhr.send(JSON.stringify({ title }));
