@@ -13,7 +13,7 @@ function fetchTasks() {
         div.innerHTML = `
           <div class="task">
             <div class="task-title">
-              <textarea class="task-input">${task.title}</textarea>
+              <textarea class="task-input" maxlength="255">${task.title}</textarea>
             </div>
             <div class="task-actions">
               <button type="button" class="delete-button" onclick="deleteTask(${task.id}, this)">Eliminar</button>
