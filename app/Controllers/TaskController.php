@@ -14,7 +14,12 @@ class TaskController extends ResourceController
   public function index()
   {
     $tasks = $this->model->findAll();
-    return $this->respond($tasks);
+
+    return $this->response->setJSON([
+      'status' => 'success',
+      'message' => 'datos encontrados',
+      'data' => $tasks
+    ])->setStatusCode(200);
   }
 
   public function show($id = null)
@@ -23,10 +28,17 @@ class TaskController extends ResourceController
     $task = $taskModel->find($id);
 
     if (!$task) {
-      return $this->failNotFound("Task with ID $id not found.");
+      return $this->response->setJSON([
+        'status' => 'Not Found',
+        'message' => 'recurso no existe'
+      ])->setStatusCode(400);
     }
 
-    return $this->respond($task);
+    return $this->response->setJSON([
+      'status' => 'success',
+      'message' => 'datos encontrados',
+      'data' => $task
+    ])->setStatusCode(200);
   }
 
   public function create()
@@ -34,20 +46,28 @@ class TaskController extends ResourceController
     $taskModel = new TaskModel();
     $data = $this->request->getJSON(true);
 
-    if (!$data || !isset($data['title']) || empty(trim($data['title']))) {
+    $data['title'] = isset($data['title']) ? strip_tags(trim($data['title'])) : null;
+
+    $validation =  \Config\Services::validation();
+    $rules = [
+      'title' => 'required|max_length[255]'
+    ];
+
+
+    if (!$data || !isset($data['title']) || empty(trim($data['title'])) || !$this->validate($rules)) {
       return $this->response->setJSON([
-        'status' => 'error',
-        'message' => 'El título es requerido'
-      ])->setStatusCode(400);
+        'status' => 'Unprocessable Entity',
+        'message' => 'Errores de validación'
+      ])->setStatusCode(422);
     }
 
     $taskModel->insert([
       'title'     => $data['title'],
-      'completed' => $data['completed'] ?? false
+      'completed' => false
     ]);
 
     return $this->response->setJSON([
-      'status' => 'success',
+      'status' => 'Created',
       'message' => 'Tarea creada correctamente',
       'task_id' => $taskModel->getInsertID()
     ])->setStatusCode(201);
@@ -59,16 +79,36 @@ class TaskController extends ResourceController
     $data = $this->request->getJSON(true);
 
     if (!$this->model->find($id)) {
-      return $this->failNotFound('Tarea no encontrada');
+      return $this->respond([
+        'status' => 'Not Found',
+        'message' => 'Recurso no existe',
+        'data' => $data
+      ])->setStatusCode(code: 404);
+    }
+
+
+    $data['title'] = isset($data['title']) ? strip_tags(trim($data['title'])) : null;
+
+    $validation =  \Config\Services::validation();
+    $rules = [
+      'title' => 'required|max_length[255]'
+    ];
+
+
+    if (!$data || !isset($data['title']) || empty(trim($data['title'])) || !$this->validate($rules)) {
+      return $this->response->setJSON([
+        'status' => 'Unprocessable Entity',
+        'message' => 'Errores de validación'
+      ])->setStatusCode(422);
     }
 
     $this->model->update($id, $data);
 
     return $this->respond([
-      'status' => 200,
+      'status' => 'OK',
       'message' => 'Tarea actualizada correctamente',
       'data' => $data
-    ]);
+    ])->setStatusCode(200);
   }
 
   public function delete($id = null)
@@ -76,14 +116,18 @@ class TaskController extends ResourceController
     $task = $this->model->find($id);
 
     if (!$task) {
-      return $this->failNotFound("Task with ID $id not found");
+      return $this->response->setJSON([
+        'status' => 'Not Found',
+        'message' => 'Recurso no existe'
+      ])->setStatusCode(404);
     }
 
     $this->model->delete($id);
 
-    return $this->respondDeleted([
-      'message' => "Task with ID $id deleted successfully"
-    ]);
+    return $this->respond([
+      'status' => 'No Content',
+      'message' => 'Borrado exitoso'
+    ])->setStatusCode(204);
   }
 
   public function view()
